@@ -15,6 +15,7 @@ export default function LoginScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Log In</Text>
+      <Text style={styles.label}>Email</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -23,6 +24,7 @@ export default function LoginScreen() {
         autoCapitalize="none"
         keyboardType="email-address"
       />
+      <Text style={styles.label}>Password</Text>
       <TextInput
         style={styles.input}
         placeholder="Password"
@@ -44,4 +46,5 @@ const styles = StyleSheet.create({
   input: { borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 12, marginBottom: 16 },
   linkButton: { backgroundColor: '#007AFF', borderRadius: 8, padding: 12, marginTop: 16 },
   linkButtonText: { color: '#fff', textAlign: 'center', fontWeight: 'bold' },
+  label: { fontSize: 15, color: '#333', marginBottom: 4, marginLeft: 2 },
 }); 

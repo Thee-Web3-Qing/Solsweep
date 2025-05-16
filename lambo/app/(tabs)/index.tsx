@@ -103,8 +103,9 @@ function HomeContent() {
   const [reflectionCurrent, setReflectionCurrent] = useState('');
   const [reflectionFuture, setReflectionFuture] = useState('');
   const [wallet, setWallet] = useState('');
-  // Pick a random goal for demo
-  const goal = goals[Math.floor(Math.random() * goals.length)];
+  // Pick a random goal for demo ONLY ONCE per mount
+  const goalRef = React.useRef(goals[Math.floor(Math.random() * goals.length)]);
+  const goal = goalRef.current;
 
   // Collect all user goal images, fallback to demo images if none
   const userImages = goals.map(g => g.imageUrl).filter(Boolean);

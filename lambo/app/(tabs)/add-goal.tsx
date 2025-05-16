@@ -2,7 +2,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Animated, Easing, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Animated, Easing, FlatList, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import MotivationalToast from '../components/MotivationalToast';
 
 export default function AddGoalScreen() {
   const [description, setDescription] = useState('');
@@ -13,10 +14,27 @@ export default function AddGoalScreen() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const plusAnim = useState(new Animated.Value(0))[0];
   const router = useRouter();
+  const motivationalMessages = [
+    "Have you been playing with your life?",
+    "Rise up wake up, now determines your future",
+    "Danger ooo Dangerrrr",
+    "No work no Lambo",
+    "No surrender no retreat",
+    "Laziness casts into a deep sleep, and an idle person will suffer hunger."
+  ];
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
   const handleSave = () => {
+    if (!description || !targetMetric) {
+      setToastMessage("No work no Lambo");
+      setToastVisible(true);
+      return;
+    }
     // TODO: Save goal to storage or context, including imageUrl
-    router.replace('/dashboard');
+    setToastMessage(motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)]);
+    setToastVisible(true);
+    setTimeout(() => router.replace('/dashboard'), 1200);
   };
 
   const handleCategoryPress = (cat: string) => {
@@ -50,94 +68,108 @@ export default function AddGoalScreen() {
 
   return (
     <LinearGradient colors={['#e0f2ff', '#fff']} style={styles.gradientBg}>
-      <View style={styles.container}>
-        {/* Top heading and subtext */}
-        <Text style={styles.pageHeading}>New target already?</Text>
-        <Text style={styles.pageSubtext}>Na you dey hot</Text>
-        {/* Goal Categories Dropdown */}
-        <View style={styles.dropdownContainer}>
-          <TouchableOpacity
-            style={styles.categoryDropdownChip}
-            onPress={() => setDropdownOpen((open) => !open)}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.categoryDropdownText}>{selectedCategory || 'Categories'}</Text>
-            <Ionicons
-              name={dropdownOpen ? 'chevron-up' : 'chevron-down'}
-              size={20}
-              color="#fff"
-              style={{ marginLeft: 8 }}
-            />
-          </TouchableOpacity>
-          {dropdownOpen && (
-            <View style={styles.dropdownList}>
-              {goalCategories.map((cat) => (
-                <TouchableOpacity
-                  key={cat}
-                  style={styles.dropdownItem}
-                  onPress={() => handleCategoryPress(cat)}
-                >
-                  <Text style={styles.dropdownItemText}>{cat}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
-        </View>
-        {/* Demo goals in a horizontal scrollable bar */}
-        <Text style={styles.demoTitle}>Need help?</Text>
-        <View style={styles.demoScrollRow}>
-          <FlatList
-            data={demoGoals}
-            horizontal
-            keyExtractor={(_, i) => i.toString()}
-            renderItem={({ item }) => (
-              <LinearGradient colors={['#b3e5fc', '#e0f2ff']} style={styles.demoGoalBar} start={{x:0, y:0}} end={{x:1, y:0}}>
-                <Text style={styles.demoGoalHeading}>{item.description}</Text>
-                <Text style={styles.demoGoalMetric}>{item.targetMetric}</Text>
-                <Text style={styles.demoGoalDeadline}>{item.deadline}</Text>
-              </LinearGradient>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 24}
+      >
+        <ScrollView
+          contentContainerStyle={styles.container}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* Top heading and subtext */}
+          <Text style={styles.pageHeading}>New target already?</Text>
+          <Text style={styles.pageSubtext}>Na you dey hot</Text>
+          {/* Goal Categories Dropdown */}
+          <View style={styles.dropdownContainer}>
+            <TouchableOpacity
+              style={styles.categoryDropdownChip}
+              onPress={() => setDropdownOpen((open) => !open)}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.categoryDropdownText}>{selectedCategory || 'Categories'}</Text>
+              <Ionicons
+                name={dropdownOpen ? 'chevron-up' : 'chevron-down'}
+                size={20}
+                color="#fff"
+                style={{ marginLeft: 8 }}
+              />
+            </TouchableOpacity>
+            {dropdownOpen && (
+              <View style={styles.dropdownList}>
+                {goalCategories.map((cat) => (
+                  <TouchableOpacity
+                    key={cat}
+                    style={styles.dropdownItem}
+                    onPress={() => handleCategoryPress(cat)}
+                  >
+                    <Text style={styles.dropdownItemText}>{cat}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
             )}
-            showsHorizontalScrollIndicator={false}
-          />
-        </View>
-        <Text style={styles.title}>Add New Goal</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Goal Description"
-          value={description}
-          onChangeText={setDescription}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Target Metric (e.g., SOL, NFT name)"
-          value={targetMetric}
-          onChangeText={setTargetMetric}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Deadline (optional)"
-          value={deadline}
-          onChangeText={setDeadline}
-        />
-        <View style={styles.imageInputRow}>
-          <Ionicons name="image-outline" size={24} color="#888" style={{ marginRight: 8 }} />
+          </View>
+          {/* Demo goals in a horizontal scrollable bar */}
+          <Text style={styles.demoTitle}>Need help?</Text>
+          <View style={styles.demoScrollRow}>
+            <FlatList
+              data={demoGoals}
+              horizontal
+              keyExtractor={(_, i) => i.toString()}
+              renderItem={({ item }) => (
+                <LinearGradient colors={['#b3e5fc', '#e0f2ff']} style={styles.demoGoalBar} start={{x:0, y:0}} end={{x:1, y:0}}>
+                  <Text style={styles.demoGoalHeading}>{item.description}</Text>
+                  <Text style={styles.demoGoalMetric}>{item.targetMetric}</Text>
+                  <Text style={styles.demoGoalDeadline}>{item.deadline}</Text>
+                </LinearGradient>
+              )}
+              showsHorizontalScrollIndicator={false}
+            />
+          </View>
+          <Text style={styles.title}>Add New Goal</Text>
+          <Text style={styles.label}>Goal Description</Text>
           <TextInput
-            style={[styles.input, { flex: 1, marginBottom: 0 }]}
-            placeholder="Image URL (optional)"
-            value={imageUrl}
-            onChangeText={setImageUrl}
+            style={styles.input}
+            placeholder="Goal Description"
+            value={description}
+            onChangeText={setDescription}
           />
-        </View>
-        <TouchableOpacity style={styles.blueButton} onPress={handleSaveWithBounce}>
-          <Animated.Text style={styles.blueButtonText}>Save Goal</Animated.Text>
-        </TouchableOpacity>
-      </View>
+          <Text style={styles.label}>Target Metric (e.g., SOL, NFT name)</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Target Metric (e.g., SOL, NFT name)"
+            value={targetMetric}
+            onChangeText={setTargetMetric}
+          />
+          <Text style={styles.label}>Deadline (optional)</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Deadline (optional)"
+            value={deadline}
+            onChangeText={setDeadline}
+          />
+          <Text style={styles.label}>Image URL (optional)</Text>
+          <View style={styles.imageInputRow}>
+            <Ionicons name="image-outline" size={24} color="#888" style={{ marginRight: 8 }} />
+            <TextInput
+              style={[styles.input, { flex: 1, marginBottom: 0 }]}
+              placeholder="Image URL (optional)"
+              value={imageUrl}
+              onChangeText={setImageUrl}
+            />
+          </View>
+          <TouchableOpacity style={styles.blueButton} onPress={handleSaveWithBounce}>
+            <Animated.Text style={styles.blueButtonText}>Save Goal</Animated.Text>
+          </TouchableOpacity>
+        </ScrollView>
+        <MotivationalToast message={toastMessage} visible={toastVisible} onClose={() => setToastVisible(false)} />
+      </KeyboardAvoidingView>
     </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 24 },
+  container: { flexGrow: 1, justifyContent: 'center', padding: 24 },
   title: { fontSize: 24, fontWeight: 'bold', marginBottom: 24, textAlign: 'center' },
   input: { borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 12, marginBottom: 16 },
   imageInputRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
@@ -162,4 +194,5 @@ const styles = StyleSheet.create({
   categoryChipTextSelected: { color: '#fff', textDecorationLine: 'underline' },
   pageHeading: { fontSize: 24, fontWeight: 'bold', color: '#007AFF', marginBottom: 2, marginTop: 8, textAlign: 'left' },
   pageSubtext: { fontSize: 15, color: '#333', marginBottom: 12, textAlign: 'left', fontStyle: 'italic' },
+  label: { fontSize: 15, color: '#333', marginBottom: 4, marginLeft: 2 },
 }); 

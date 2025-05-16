@@ -104,6 +104,27 @@ export default function DashboardScreen() {
             </View>
           </View>
         </View>
+        {/* Connect Socials Section */}
+        <View style={styles.socialsCard}>
+          <Text style={styles.sectionTitle}>Connect Socials</Text>
+          <View style={styles.socialsRow}>
+            <View style={styles.socialItem}>
+              <Text style={styles.socialIcon}>𝕏</Text>
+              <Text style={styles.socialLabel}>X</Text>
+              <View style={styles.socialButton}><Text style={styles.socialButtonText}>Connect</Text></View>
+            </View>
+            <View style={styles.socialItem}>
+              <Text style={styles.socialIcon}>📸</Text>
+              <Text style={styles.socialLabel}>Instagram</Text>
+              <View style={styles.socialButton}><Text style={styles.socialButtonText}>Connect</Text></View>
+            </View>
+            <View style={styles.socialItem}>
+              <Text style={styles.socialIcon}>🎵</Text>
+              <Text style={styles.socialLabel}>TikTok</Text>
+              <View style={styles.socialButton}><Text style={styles.socialButtonText}>Connect</Text></View>
+            </View>
+          </View>
+        </View>
         <Text style={styles.sectionTitle}>Your Goals</Text>
         <FlatList
           data={goals}
@@ -165,4 +186,11 @@ const styles = StyleSheet.create({
   pieLegendDot: { width: 14, height: 14, borderRadius: 7, marginRight: 8 },
   pieLegendLabel: { fontSize: 14, color: '#333', flex: 1 },
   pieLegendValue: { fontSize: 14, color: '#007AFF', fontWeight: 'bold' },
+  socialsCard: { backgroundColor: '#fff', borderRadius: 16, padding: 18, marginBottom: 32, shadowColor: '#007AFF', shadowOpacity: 0.08, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2, marginTop: 8 },
+  socialsRow: { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginTop: 8 },
+  socialItem: { alignItems: 'center', flex: 1 },
+  socialIcon: { fontSize: 32, marginBottom: 4 },
+  socialLabel: { fontSize: 14, fontWeight: 'bold', marginBottom: 6, color: '#333' },
+  socialButton: { backgroundColor: '#007AFF', borderRadius: 8, paddingVertical: 6, paddingHorizontal: 18, marginBottom: 4 },
+  socialButtonText: { color: '#fff', fontWeight: 'bold', fontSize: 14 },
 }); 

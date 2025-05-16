@@ -111,18 +111,21 @@ export default function YourDreamsScreen() {
             {/* Input fields for new goal, only show if plus was clicked */}
             {showInput[key] && (
               <View style={styles.inputBlock}>
+                <Text style={styles.label}>Item (e.g., House, Car, NFT)</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="Item"
                   value={newGoal[key].item}
                   onChangeText={(v) => handleInputChange(key, 'item', v)}
                 />
+                <Text style={styles.label}>Target (e.g., $100,000, 10 SOL)</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="Target"
                   value={newGoal[key].price}
                   onChangeText={(v) => handleInputChange(key, 'price', v)}
                 />
+                <Text style={styles.label}>Deadline (e.g., December 8, 2025)</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="Deadline"
@@ -172,4 +175,5 @@ const styles = StyleSheet.create({
   placeholderTitle: { fontSize: 18, fontWeight: '600', marginBottom: 8, marginTop: 8 },
   placeholderGoal: { backgroundColor: '#f0f4ff', borderRadius: 8, padding: 10, marginBottom: 6 },
   gradientBg: { flex: 1 },
+  label: { fontSize: 15, color: '#333', marginBottom: 4, marginLeft: 2 },
 }); 
