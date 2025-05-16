@@ -95,7 +95,7 @@ function HomeContent() {
   const { width } = useWindowDimensions();
   const cardGap = 16;
   const horizontalPadding = 24;
-  const cardSize = (width - horizontalPadding * 2 - cardGap) / 2;
+  const cardSize = ((width - horizontalPadding * 2 - cardGap) / 2) * 0.7;
   const imageSize = Math.min(140, (width - horizontalPadding * 2 - 32) / 3);
   const [reflection, setReflection] = useState('');
   const [message, setMessage] = useState('');

@@ -1,6 +1,7 @@
 import { FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import * as Font from 'expo-font';
 import { Tabs } from 'expo-router';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Platform } from 'react-native';
 
 import { HapticTab } from '@/components/HapticTab';
@@ -10,6 +11,14 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+
+  useEffect(() => {
+    Font.loadAsync({
+      ...Ionicons.font,
+      ...FontAwesome.font,
+      ...MaterialCommunityIcons.font,
+    });
+  }, []);
 
   return (
     <Tabs
