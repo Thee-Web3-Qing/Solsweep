@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useRef, useState } from 'react';
-import { FlatList, Image, Keyboard, KeyboardAvoidingView, Linking, ListRenderItemInfo, Platform, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { FlatList, Keyboard, KeyboardAvoidingView, ListRenderItemInfo, Platform, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
 
 const BROWN = '#6D4C41';
@@ -986,7 +986,6 @@ export default function HomeScreen() {
     if (item.isShareGraphic) {
       return (
         <View style={styles.shareGraphic}>
-          <Image source={require('@/assets/images/icon.png')} style={styles.shareLogo} />
           <Text style={styles.shareText}>{item.text}</Text>
         </View>
       );
@@ -1091,30 +1090,6 @@ export default function HomeScreen() {
         end={{ x: 1, y: 1 }}
         style={StyleSheet.absoluteFill}
       />
-      {/* WhatsApp Bot Button */}
-      <TouchableOpacity
-        style={{
-          position: 'absolute',
-          top: 50,
-          right: 20,
-          zIndex: 10,
-          backgroundColor: '#25D366',
-          borderRadius: 24,
-          paddingVertical: 8,
-          paddingHorizontal: 16,
-          flexDirection: 'row',
-          alignItems: 'center',
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.2,
-          shadowRadius: 4,
-          elevation: 6,
-        }}
-        onPress={() => Linking.openURL('https://wa.me/2348100000000?text=Hi%20Solsweep%20bot!')}
-      >
-        <Ionicons name="logo-whatsapp" size={22} color="#fff" style={{ marginRight: 8 }} />
-        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16 }}>Chat on WhatsApp</Text>
-      </TouchableOpacity>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={[styles.container, { flex: 1, minHeight: 0 }]}> 
           {/* SVG pattern overlay: waves and dots (as background, never blocking input) */}
@@ -1143,10 +1118,6 @@ export default function HomeScreen() {
               ))
             ))}
           </Svg>
-          {/* Logo at the top */}
-          <View style={styles.logoRow}>
-            <Image source={require('@/assets/images/icon.png')} style={styles.headerLogo} />
-          </View>
           <View style={[styles.chatArea, { flex: 1 }]}>
             <FlatList
               ref={flatListRef}
@@ -1289,12 +1260,6 @@ const styles = StyleSheet.create({
     maxWidth: '80%',
     alignSelf: 'flex-start',
   },
-  shareLogo: {
-    width: 48,
-    height: 48,
-    marginBottom: 12,
-    borderRadius: 12,
-  },
   shareText: {
     color: '#fff',
     fontSize: 18,
@@ -1330,17 +1295,6 @@ const styles = StyleSheet.create({
   },
   gradientBg: {
     flex: 1,
-  },
-  logoRow: {
-    alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 2,
-  },
-  headerLogo: {
-    width: 38,
-    height: 38,
-    borderRadius: 10,
-    opacity: 0.95,
   },
   chatSection: {
     backgroundColor: '#3E2723',

@@ -1,3 +1,5 @@
+import { Connection, PublicKey } from '@solana/web3.js';
+
 // In-memory user data store (for dev/demo only)
 const userWallets = {};
 const userStatus = {};
@@ -56,6 +58,9 @@ const WALLET_LIMIT_PREMIUM = 5;
 const PREMIUM_PRICE = 5; // $5
 const PAYMENT_WALLET = '7x9abc123EXAMPLEWALLETADDRESSFORDEMO123456789';
 
+const SOLANA_RPC_URL = process.env.SOLANA_RPC_URL || 'https://solana-mainnet.g.alchemy.com/v2/hlXtR9rLYqhvkX1hhb1q1suPJ269d4wv';
+const solanaConnection = new Connection(SOLANA_RPC_URL);
+
 function isValidSolanaAddress(address) {
   // Solana addresses are base58, 32-44 chars, start with a letter or number
   return /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(address);
@@ -86,7 +91,22 @@ function getMockStreak(days = 30) {
   return { streak, longest, total, days };
 }
 
-export default function handler(req, res) {
+// Helper to fetch SPL token balances for a wallet
+async function getSplTokenBalances(pubkey, connection) {
+  const tokenAccounts = await connection.getParsedTokenAccountsByOwner(pubkey, { programId: new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA') });
+  const tokens = [];
+  for (const { account } of tokenAccounts.value) {
+    const info = account.data.parsed.info;
+    const mint = info.mint;
+    const amount = info.tokenAmount.uiAmount;
+    if (amount > 0) {
+      tokens.push({ mint, amount });
+    }
+  }
+  return tokens;
+}
+
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -199,14 +219,23 @@ export default function handler(req, res) {
       }
       // Increment freeChecksUsed for free users
       if (!premium) userStatus[userId].freeChecksUsed++;
-      const scan = getMockScanResult(text);
+      // Fetch real SOL balance from Solana
+      let solBalance = 0;
+      try {
+        const pubkey = new PublicKey(text);
+        const lamports = await solanaConnection.getBalance(pubkey);
+        solBalance = lamports / 1e9;
+      } catch (e) {
+        return res.status(200).json({
+          response: `❌ Error fetching wallet balance. Please check the address and try again.`,
+          actions: ['Check wallet', 'Main menu']
+        });
+      }
       return res.status(200).json({
         response:
           `🔍 Scan results for wallet ${text.slice(0, 12)}...\n` +
-          `Airdrops: ${scan.airdrops.map(a => `${a.name}: ${a.amount}`).join(', ')}\n` +
-          `Dust: ${scan.dust}\n` +
-          `Staking: ${scan.staking}\n` +
-          `Total: ${scan.total}\n\nWhat would you like to do next?`,
+          `SOL Balance: ${solBalance}\n` +
+          `\nWhat would you like to do next?`,
         actions: ['Check wallet', 'Farm airdrops', 'On Chain Streak']
       });
     }
@@ -371,6 +400,6 @@ export default function handler(req, res) {
   // If none of the above matched, show a helpful error and suggest main actions
   return res.status(200).json({
     response: `Sorry, I didn't understand that. Type 'help' to see what I can do, or choose an option below.`,
-    actions: ['Add wallet', 'Check wallet', 'Farm airdrops', 'On Chain Streak', 'Pay', 'Help']
+    actions: ['Add wallet', 'Check wallet', 'Farm airdrops', 'On Chain Streak', 'Pay']
   });
 } 
